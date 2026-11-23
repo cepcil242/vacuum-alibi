@@ -14,16 +14,21 @@ const TEXT =
 
 const OUTPUT_PATH = process.env.ENTRY_OUTPUT_PATH ?? "/output/entry.txt";
 
-function main(): void {
-  const chars = [...TEXT];
+// The gate accepts 1–200 Unicode code points, not only white space.
+function validateEntry(text: string): void {
+  const chars = [...text];
   if (chars.length < 1 || chars.length > 200) {
     throw new Error(
       `entry must be 1-200 characters, got ${chars.length}`,
     );
   }
-  if (TEXT.trim().length === 0) {
+  if (text.trim().length === 0) {
     throw new Error("entry must not be only whitespace");
   }
+}
+
+function main(): void {
+  validateEntry(TEXT);
   mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
   writeFileSync(OUTPUT_PATH, TEXT, "utf8");
 }
